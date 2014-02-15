@@ -11,6 +11,13 @@ public class GameServer : MonoBehaviour {
 
     public Transform[] playerPrefabs;
 
+    public Transform player;
+
+    public Transform[] planetPrefabs;
+
+    public int planetCounts = 5;
+    public Vector2 extends;
+
     Dictionary<NetworkPlayer, int> playerIds;
     List<int> ids;
 
@@ -18,7 +25,7 @@ public class GameServer : MonoBehaviour {
 	IEnumerator Start () {
         if (isServer)
         {
-            Network.InitializeServer(4, 12340);
+            Network.InitializeServer(4, 12340, false);
             var startButton = Instantiate(startGameButtonPrefab);
 
             playerIds = new Dictionary<NetworkPlayer, int>();
@@ -38,6 +45,29 @@ public class GameServer : MonoBehaviour {
                 yield return false;
             }
 
+            for (int n = 0; n < planetCounts; n++)
+            {
+                Vector3 pos;
+                float nearest;
+                int safety = 50;
+                do
+                {
+                    pos = transform.position + new Vector3(extends.x * Random.Range(-1f, 1f), extends.y * Random.Range(-1f, 1f));
+                    nearest = float.MaxValue;
+                    foreach (var t in FindObjectsOfType<Transform>())
+                        if (Vector3.Distance(pos, t.position) < nearest)
+                            nearest = Vector3.Distance(pos, t.position);
+
+                    if (safety-- < 0)
+                        break;
+                }
+                while (nearest > 2);
+
+                Network.Instantiate(planetPrefabs[Random.Range(0, planetPrefabs.Length)], pos, Quaternion.identity, 0);
+            }
+
+            networkView.RPC("StartTheGame", RPCMode.All);
+            StartTheGame();
         }
 	}
 
@@ -59,17 +89,12 @@ public class GameServer : MonoBehaviour {
     [RPC]
     void StartTheGame()
     {
-
+        // give control to the player;
     }
 
     [RPC]
     void JoinedGame(int id)
     {
-        Network.Instantiate(playerPrefabs[id], playerPrefabs[id].position, Quaternion.identity, 0);
+        player = Network.Instantiate(playerPrefabs[id], playerPrefabs[id].position, Quaternion.identity, 0) as Transform;
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
