@@ -6,6 +6,13 @@ public class MovementScript : MonoBehaviour {
 	public float forceMultiplierForGyro = 10f;
 	public AnimationCurve curve;
 
+	//wobble
+	/*public AnimationCurve wobbleCurve;
+	public float wobbleFactor;
+	private float time;
+	private float wobble = 0;*/
+
+	//network
     private SpacePlayer sp;
 
     void Awake()
@@ -40,13 +47,19 @@ public class MovementScript : MonoBehaviour {
             }
 
             dir.x = Mathf.Sign(dir.x) * curve.Evaluate(dir.x);
-            dir.z = Mathf.Sign(dir.z) * curve.Evaluate(dir.z);
+            dir.y = Mathf.Sign(dir.y) * curve.Evaluate(dir.y);
 
             // Make it move 10 meters per second instead of 10 meters per frame...
             dir *= Time.deltaTime;
 
+
             // Move object
             rigidbody.AddForce(dir * force * forceMultiplierForGyro);
+
+			//time += Time.deltaTime;
+			//wobble = curve.Evaluate (time);
+
+			transform.up = rigidbody.velocity.normalized;
         }
 	}
 

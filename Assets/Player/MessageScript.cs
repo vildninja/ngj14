@@ -12,8 +12,19 @@ public class MessageScript : MonoBehaviour {
 			if(t.phase == TouchPhase.Began)
 			{
 				Vector3 touchPos = Camera.main.ScreenToWorldPoint(t.position);
+
+				//Find nearest Planet
+				PlanetController nearest = null;
+				float distance = float.MaxValue;
+				foreach(PlanetController pc in FindObjectsOfType<PlanetController>()){
+					if (nearest == null || Vector3.Distance(touchPos,pc.transform.position) < distance){
+						nearest = pc;
+						distance = Vector3.Distance(touchPos,pc.transform.position);
+					}
+				}
+
 				LoveShotInMotion newShot = Network.Instantiate(message,transform.position,transform.rotation,0) as LoveShotInMotion;
-				Vector3 heading = touchPos - transform.position;
+				Vector3 heading = nearest.transform.position - transform.position;
 				heading.z = 0;
 				Vector3 dir = heading / heading.magnitude;
 				newShot.transform.rotation = Quaternion.LookRotation(Vector3.forward,heading);
@@ -24,19 +35,14 @@ public class MessageScript : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider c){
-		Debug.Log("0");
 		if(c.GetComponent<LoveShotInMotion>())
 		{
-			Debug.Log("a"+c.GetComponent<LoveShotInMotion>().senderID);
-			Debug.Log("b"+gameObject.GetComponent<SpacePlayer>().id);
 			if (c.GetComponent<LoveShotInMotion>().senderID != gameObject.GetComponent<SpacePlayer>().id) {
-				Debug.Log("b");
 				c.GetComponent<LoveShotInMotion>().loveFactor = -1;
 				foreach(Transform t in c.transform)
 				{
 					if(t.GetComponent<LoveOrHate>().isLove)
 					{
-						Debug.Log("c");
 						t.gameObject.SetActive(false);
 					}
 					else
