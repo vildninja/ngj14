@@ -5,7 +5,6 @@ public class MessageScript : MonoBehaviour {
 
 	public LoveShotInMotion message;
 	public float messageForce = 100f;
-	public int playerNumber;
 
 	// Update is called once per frame
 	void Update () {
@@ -19,7 +18,7 @@ public class MessageScript : MonoBehaviour {
 				Vector3 dir = heading / heading.magnitude;
 				newShot.transform.rotation = Quaternion.LookRotation(Vector3.forward,heading);
 				newShot.rigidbody.AddForce(dir * messageForce);
-				newShot.sender = playerNumber;
+				newShot.senderID = gameObject.GetComponent<SpacePlayer>().id;
 			}
 		}
 	}
@@ -27,8 +26,8 @@ public class MessageScript : MonoBehaviour {
 	void OnTriggerEnter(Collider c){
 		if(c.GetComponent<LoveShotInMotion>())
 		{
-			if (c.GetComponent<LoveShotInMotion>().sender != playerNumber) {
-				c.GetComponent<LoveShotInMotion>().hateFactor = 1;
+			if (c.GetComponent<LoveShotInMotion>().senderID != gameObject.GetComponent<SpacePlayer>().id) {
+				c.GetComponent<LoveShotInMotion>().loveFactor = -1;
 				foreach(Transform t in c.transform)
 				{
 					if(t.GetComponent<LoveOrHate>().isLove)

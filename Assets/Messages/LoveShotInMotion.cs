@@ -3,8 +3,8 @@ using System.Collections;
 
 public class LoveShotInMotion : MonoBehaviour {
 
-	public int sender;	
-	public float hateFactor;
+	public int senderID;	
+	public float loveFactor;
 	public float selfDestructTimer = 20;
 
 	IEnumerator Start(){

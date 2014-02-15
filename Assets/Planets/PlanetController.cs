@@ -64,4 +64,16 @@ public class PlanetController : MonoBehaviour {
             }
         }
 	}
+
+	//When hit by a message, the love for the matching relation is decreased by the message's loveFactor. 
+	void OnTriggerEnter(Collider c){
+		if (c.GetComponent<LoveShotInMotion> ()) {
+			foreach(var relation in relations){
+				if (relation.player.id == c.GetComponent<LoveShotInMotion>().senderID){
+					relation.love -= c.GetComponent<LoveShotInMotion>().loveFactor;
+				}
+			}
+
+		}
+	}
 }
