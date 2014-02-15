@@ -59,11 +59,20 @@ public class PlanetController : MonoBehaviour {
                     if (minLove == null || rel.love < minLove.love)
                         minLove = rel;
 
-                rocket.target = minLove.player;
                 minLove.love += 0.2f;
+
+                StartCoroutine(SetRocketTarget(rocket, minLove.player));
             }
         }
 	}
+
+    IEnumerator SetRocketTarget(Rocket rocket, SpacePlayer target)
+    {
+        yield return false;
+
+        rocket.SetTarget(target.networkView.owner);
+        rocket.networkView.RPC("SetTarget", RPCMode.Others, target.networkView.owner);
+    }
 
 	//When hit by a message, the love for the matching relation is decreased by the message's loveFactor. 
 	void OnTriggerEnter(Collider c){
