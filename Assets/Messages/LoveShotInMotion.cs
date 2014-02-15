@@ -15,12 +15,33 @@ public class LoveShotInMotion : MonoBehaviour {
 	}
 
     [RPC]
-    public void SetVelocity(Vector3 direction)
+    public void SetVelocity(Vector3 direction, int id)
     {
+        senderID = id;
         rigidbody.velocity = direction;
         if (FindObjectsOfType<SpacePlayer>().Any(sp => sp.networkView.owner == networkView.owner))
             player = FindObjectsOfType<SpacePlayer>().First(sp => sp.networkView.owner == networkView.owner);
 
         transform.Find("GiftTag").renderer.material.color = player.uiColor;
+    }
+
+    [RPC]
+    public void Turd()
+    {
+        loveFactor = -1;
+        foreach (Transform t in transform)
+        {
+            if (t.GetComponent<LoveOrHate>())
+            {
+                if (t.GetComponent<LoveOrHate>().isLove)
+                {
+                    t.gameObject.SetActive(false);
+                }
+                else
+                {
+                    t.gameObject.SetActive(true);
+                }
+            }
+        }
     }
 }

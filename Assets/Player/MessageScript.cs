@@ -36,34 +36,22 @@ public class MessageScript : MonoBehaviour {
                     Vector3 heading = nearest.transform.position - transform.position;
                     heading.z = 0;
                     Vector3 dir = heading.normalized;
-                    newShot.SetVelocity(dir * messageForce);
-                    newShot.networkView.RPC("SetVelocity", RPCMode.Others, dir * messageForce);
+                    newShot.SetVelocity(dir * messageForce, sp.id);
+                    newShot.networkView.RPC("SetVelocity", RPCMode.Others, dir * messageForce, sp.id);
                 }
 			}
 		}
 	}
 
-	void OnTriggerEnter(Collider c){
-		if(c.GetComponent<LoveShotInMotion>())
-		{
-			if (c.GetComponent<LoveShotInMotion>().senderID != gameObject.GetComponent<SpacePlayer>().id) {
-				c.GetComponent<LoveShotInMotion>().loveFactor = -1;
-				foreach(Transform t in c.transform)
-				{
-                    if (t.GetComponent<LoveOrHate>())
-                    {
-                        if (t.GetComponent<LoveOrHate>().isLove)
-                        {
-                            t.gameObject.SetActive(false);
-                        }
-                        else
-                        {
-                            t.gameObject.SetActive(true);
-                        }
-                    }
-				}
-
-			}
-		}
-	}
+    void OnTriggerEnter(Collider c)
+    {
+        if (Network.isServer && c.GetComponent<LoveShotInMotion>())
+        {
+            if (c.GetComponent<LoveShotInMotion>().networkView.owner != GetComponent<SpacePlayer>().networkView.owner)
+            {
+                c.GetComponent<LoveShotInMotion>().Turd();
+                c.GetComponent<LoveShotInMotion>().networkView.RPC("Turd", RPCMode.Others);
+            }
+        }
+    }
 }
