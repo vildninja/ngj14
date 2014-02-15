@@ -109,6 +109,8 @@ public class GameServer : MonoBehaviour {
     void StartTheGame()
     {
         // give control to the player;
+        foreach (var p in FindObjectsOfType<SpacePlayer>())
+            p.canMove = true;
     }
 
     [RPC]
