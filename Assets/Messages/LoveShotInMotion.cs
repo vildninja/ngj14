@@ -10,5 +10,11 @@ public class LoveShotInMotion : MonoBehaviour {
 	IEnumerator Start(){
 		yield return new WaitForSeconds (selfDestructTimer);
 		Network.Destroy (gameObject);
-	}	
+	}
+
+    [RPC]
+    public void SetVelocity(Vector3 direction, Color color)
+    {
+        rigidbody.velocity = direction;
+    }
 }

@@ -23,11 +23,11 @@ public class MessageScript : MonoBehaviour {
 					}
 				}
 
-				LoveShotInMotion newShot = Network.Instantiate(message,transform.position,transform.rotation,0) as LoveShotInMotion;
+				LoveShotInMotion newShot = Network.Instantiate(message,transform.position,Quaternion.identity,0) as LoveShotInMotion;
 				Vector3 heading = nearest.transform.position - transform.position;
 				heading.z = 0;
-				Vector3 dir = heading / heading.magnitude;
-				newShot.transform.rotation = Quaternion.LookRotation(Vector3.forward,heading);
+				Vector3 dir = heading.normalized;
+                newShot.SetVelocity(dir * messageForce, GetComponent<SpacePlayer>().uiColor);
 				newShot.rigidbody.AddForce(dir * messageForce);
 				newShot.senderID = gameObject.GetComponent<SpacePlayer>().id;
 			}
