@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class GameServer : MonoBehaviour {
 
-    public bool isServer;
     public bool startGame = false;
 
     public Transform startGameButtonPrefab;
@@ -15,6 +14,9 @@ public class GameServer : MonoBehaviour {
 
     public Transform[] planetPrefabs;
 
+    public exSpriteFont joinServerButtonPrefab;
+    private List<exSpriteFont> joinButtons = null;
+
     public int planetCounts = 5;
     public Vector2 extends;
 
@@ -23,9 +25,10 @@ public class GameServer : MonoBehaviour {
 
 	// Use this for initialization
 	IEnumerator Start () {
-        if (isServer)
+        if (GameController.Instance.isServer)
         {
             Network.InitializeServer(4, 12340, false);
+            MasterServer.RegisterHost("ngj20014-spacelove", "game" + Random.Range(100, 1000));
             var startButton = Instantiate(startGameButtonPrefab);
 
             playerIds = new Dictionary<NetworkPlayer, int>();
@@ -44,6 +47,7 @@ public class GameServer : MonoBehaviour {
             {
                 yield return false;
             }
+            MasterServer.UnregisterHost();
 
             for (int n = 0; n < planetCounts; n++)
             {
@@ -59,9 +63,12 @@ public class GameServer : MonoBehaviour {
                             nearest = Vector3.Distance(pos, t.position);
 
                     if (safety-- < 0)
+                    {
+                        print("Safety");
                         break;
+                    }
                 }
-                while (nearest > 2);
+                while (nearest < 3);
 
                 Network.Instantiate(planetPrefabs[Random.Range(0, planetPrefabs.Length)], pos, Quaternion.identity, 0);
             }
@@ -69,7 +76,37 @@ public class GameServer : MonoBehaviour {
             networkView.RPC("StartTheGame", RPCMode.All);
             StartTheGame();
         }
+
+        while (!Network.isServer && !Network.isClient)
+        {
+            MasterServer.RequestHostList("ngj20014-spacelove");
+            yield return new WaitForSeconds(5);
+        }
+
+        if (joinButtons != null)
+            foreach (var t in joinButtons)
+                Destroy(t.gameObject);
 	}
+
+    void OnMasterServerEvent(MasterServerEvent mse)
+    {
+        if (mse == MasterServerEvent.HostListReceived && !Network.isServer && !Network.isClient)
+        {
+            if (joinButtons != null)
+                foreach (var t in joinButtons)
+                    Destroy(t.gameObject);
+            joinButtons = new List<exSpriteFont>();
+            var list = MasterServer.PollHostList();
+            for (int i = 0; i < list.Length; i++)
+            {
+                var button = Instantiate(joinServerButtonPrefab, new Vector3(0, extends.y - i * 1.5f), Quaternion.identity) as exSpriteFont;
+                button.text = list[i].gameName;
+                button.GetComponent<JoinServerButton>().data = list[i];
+
+                joinButtons.Add(button);
+            }
+        }
+    }
 
     void OnPlayerConnected(NetworkPlayer pid)
     {
@@ -95,6 +132,9 @@ public class GameServer : MonoBehaviour {
     [RPC]
     void JoinedGame(int id)
     {
+        if (joinButtons != null)
+            foreach (var t in joinButtons)
+                Destroy(t.gameObject);
         player = Network.Instantiate(playerPrefabs[id], playerPrefabs[id].transform.position, Quaternion.identity, 0) as SpacePlayer;
     }
 }

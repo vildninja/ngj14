@@ -20,40 +20,48 @@ public class PlanetController : MonoBehaviour {
 
     public Rocket rocketPrefab;
     public float timeToShoot;
-    float charge = 0;
+    public float charge;
     public float loveFalloff = 0.1f;
     public float maxLove = 1;
 
-    public Dictionary<SpacePlayer, PlayerRelation> relations;
+    public List<PlayerRelation> relations;
 
 	// Use this for initialization
 	void Start ()
     {
-        foreach (var sp in FindObjectsOfType<SpacePlayer>())
-            relations.Add(sp, new PlayerRelation(sp));
+        if (Network.isServer)
+        {
+            charge = Random.Range(-timeToShoot, 0);
+            relations = new List<PlayerRelation>();
+            foreach (var sp in FindObjectsOfType<SpacePlayer>())
+                relations.Add(new PlayerRelation(sp));
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        foreach (var relation in relations.Values)
-            relation.love -= loveFalloff * Time.deltaTime;
-
-        // the fewer who loves it the faster it will shoot;
-        timeToShoot += (relations.Count(r => r.Value.love < maxLove / 2) + relations.Count(r => r.Value.love < maxLove / 4) * 2) * Time.deltaTime;
-
-        if (charge > timeToShoot)
+        if (Network.isServer)
         {
-            charge = 0;
-            Vector3 forward = Random.insideUnitCircle.normalized;
-            var rocket = Network.Instantiate(rocketPrefab, transform.position + forward, Quaternion.LookRotation(forward), 0) as Rocket;
+            foreach (var relation in relations)
+                relation.love -= loveFalloff * Time.deltaTime;
 
-            PlayerRelation minLove = null;
-            foreach (var rel in relations.Values)
-                if (minLove == null || rel.love < minLove.love)
-                    minLove = rel;
+            // the fewer who loves it the faster it will shoot;
+            charge += (relations.Count(r => r.love < maxLove / 2) + relations.Count(r => r.love < maxLove / 4) * 2) * Time.deltaTime;
 
-            rocket.target = minLove.player;
-            minLove.love += 0.2f;
+            if (charge > timeToShoot)
+            {
+                charge = 0;
+                Vector3 up = Random.insideUnitCircle.normalized;
+                var rocket = Network.Instantiate(rocketPrefab, transform.position + up, Quaternion.LookRotation(Vector3.forward, up), 0) as Rocket;
+
+                PlayerRelation minLove = null;
+                foreach (var rel in relations)
+                    if (minLove == null || rel.love < minLove.love)
+                        minLove = rel;
+
+                rocket.target = minLove.player;
+                minLove.love += 0.2f;
+            }
         }
 	}
 }
