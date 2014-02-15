@@ -18,7 +18,14 @@ public class SpacePlayer : MonoBehaviour {
         if (hp <= 0)
         {
             foreach (var p in FindObjectsOfType<PlanetController>())
-                p.relations.Remove(p.relations.First(r => r.player == this));
+            {
+                var relation = p.relations.First(r => r.player == this);
+                if (relation != null)
+                {
+                    p.relations.Remove(relation);
+                    p.spirals.Remove(relation.player);
+                }
+            }
 
             if (Network.isServer)
             {
