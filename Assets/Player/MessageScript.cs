@@ -14,7 +14,7 @@ public class MessageScript : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (sp.canMove) {
+		if (sp.canMove && networkView.owner == Network.player) {
 			foreach (Touch t in Input.touches) {
                 if (t.phase == TouchPhase.Began)
                 {
