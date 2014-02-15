@@ -22,12 +22,9 @@ public class SpacePlayer : MonoBehaviour {
                 if (p.relations.Any(r => r.player == this))
                 {
                     var relation = p.relations.First(r => r.player == this);
-                    if (relation != null)
-                    {
-                        p.relations.Remove(relation);
-                        Destroy(p.spirals[relation.player]);
-                        p.spirals.Remove(relation.player);
-                    }
+                    p.relations.Remove(relation);
+                    Destroy(p.spirals[relation.player].gameObject);
+                    p.spirals.Remove(relation.player);
                 }
             }
 
