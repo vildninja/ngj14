@@ -29,6 +29,7 @@ public class GameServer : MonoBehaviour {
         {
             Network.InitializeServer(4, 12340, false);
             MasterServer.RegisterHost("ngj20014-spacelove", "game" + Random.Range(100, 1000));
+            yield return false;
             var startButton = Instantiate(startGameButtonPrefab);
 
             playerIds = new Dictionary<NetworkPlayer, int>();

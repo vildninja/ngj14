@@ -7,7 +7,6 @@ public class SpacePlayer : MonoBehaviour {
     public int id;
     public Color uiColor;
     public bool canMove;
-    public NetworkPlayer net;
     public int hp = 3;
 
     public Transform boom;
@@ -20,8 +19,14 @@ public class SpacePlayer : MonoBehaviour {
         {
             foreach (var p in FindObjectsOfType<PlanetController>())
                 p.relations.Remove(p.relations.First(r => r.player == this));
+
+            if (Network.isServer)
+            {
+                if (boom)
+                    Network.Instantiate(boom, transform.position, transform.rotation, 0);
+                Network.Destroy(gameObject);
+            }
         }
 
-        Network.Instantiate(boom, transform.position, transform.rotation, 0);
     }
 }
