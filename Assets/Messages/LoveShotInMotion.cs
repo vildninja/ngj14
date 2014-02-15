@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class LoveShotInMotion : MonoBehaviour {
 
-	public int senderID;	
+	public int senderID;
+    public SpacePlayer player;
 	public float loveFactor;
 	public float selfDestructTimer = 20;
 
@@ -13,8 +15,12 @@ public class LoveShotInMotion : MonoBehaviour {
 	}
 
     [RPC]
-    public void SetVelocity(Vector3 direction, Color color)
+    public void SetVelocity(Vector3 direction)
     {
         rigidbody.velocity = direction;
+        if (FindObjectsOfType<SpacePlayer>().Any(sp => sp.networkView.owner == networkView.owner))
+            player = FindObjectsOfType<SpacePlayer>().First(sp => sp.networkView.owner == networkView.owner);
+
+        transform.Find("GiftTag").renderer.material.color = player.uiColor;
     }
 }
