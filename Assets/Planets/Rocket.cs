@@ -81,7 +81,7 @@ public class Rocket : MonoBehaviour {
 
     void OnCollisionEnter(Collision collision)
     {
-        if (Network.isServer && collision.collider.GetComponent<SpacePlayer>() == target)
+        if (Network.isServer && collision.collider.GetComponent<SpacePlayer>() == target && collision.gameObject)
         {
             collision.collider.GetComponent<SpacePlayer>().Impact();
             collision.collider.GetComponent<SpacePlayer>().networkView.RPC("Impact", RPCMode.All);

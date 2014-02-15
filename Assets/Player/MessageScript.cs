@@ -50,14 +50,17 @@ public class MessageScript : MonoBehaviour {
 				c.GetComponent<LoveShotInMotion>().loveFactor = -1;
 				foreach(Transform t in c.transform)
 				{
-					if(t.GetComponent<LoveOrHate>().isLove)
-					{
-						t.gameObject.SetActive(false);
-					}
-					else
-					{
-						t.gameObject.SetActive(true);
-					}
+                    if (t.GetComponent<LoveOrHate>())
+                    {
+                        if (t.GetComponent<LoveOrHate>().isLove)
+                        {
+                            t.gameObject.SetActive(false);
+                        }
+                        else
+                        {
+                            t.gameObject.SetActive(true);
+                        }
+                    }
 				}
 
 			}

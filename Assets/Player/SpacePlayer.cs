@@ -15,15 +15,19 @@ public class SpacePlayer : MonoBehaviour {
     public void Impact()
     {
         hp--;
-        if (hp <= 0)
+        if (hp <= 0 && gameObject)
         {
             foreach (var p in FindObjectsOfType<PlanetController>())
             {
-                var relation = p.relations.First(r => r.player == this);
-                if (relation != null)
+                if (p.relations.Any(r => r.player == this))
                 {
-                    p.relations.Remove(relation);
-                    p.spirals.Remove(relation.player);
+                    var relation = p.relations.First(r => r.player == this);
+                    if (relation != null)
+                    {
+                        p.relations.Remove(relation);
+                        Destroy(p.spirals[relation.player]);
+                        p.spirals.Remove(relation.player);
+                    }
                 }
             }
 
