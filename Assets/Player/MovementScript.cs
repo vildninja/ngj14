@@ -6,11 +6,6 @@ public class MovementScript : MonoBehaviour {
 	public float forceMultiplierForGyro = 10f;
 	public AnimationCurve curve;
 
-	// Use this for initialization
-	void Start () {
-
-	}
-
 	void FixedUpdate(){
 		//keyboard control
 		float vertical = Input.GetAxis ("Vertical") * force;
