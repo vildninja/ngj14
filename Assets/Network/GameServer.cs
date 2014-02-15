@@ -50,28 +50,9 @@ public class GameServer : MonoBehaviour {
             }
             MasterServer.UnregisterHost();
 
-            for (int n = 0; n < planetCounts; n++)
+            foreach (var p in planetPrefabs)
             {
-                Vector3 pos;
-                float nearest;
-                int safety = 50;
-                do
-                {
-                    pos = transform.position + new Vector3(extends.x * Random.Range(-1f, 1f), extends.y * Random.Range(-1f, 1f));
-                    nearest = float.MaxValue;
-                    foreach (var t in FindObjectsOfType<Transform>())
-                        if (Vector3.Distance(pos, t.position) < nearest)
-                            nearest = Vector3.Distance(pos, t.position);
-
-                    if (safety-- < 0)
-                    {
-                        print("Safety");
-                        break;
-                    }
-                }
-                while (nearest < 3);
-
-                Network.Instantiate(planetPrefabs[Random.Range(0, planetPrefabs.Length)], pos, Quaternion.identity, 0);
+                Network.Instantiate(p, p.transform.position, Quaternion.identity, 0);
             }
 
             networkView.RPC("StartTheGame", RPCMode.All);
