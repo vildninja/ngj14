@@ -21,8 +21,8 @@ public class MovementScript : MonoBehaviour {
     }
 
 	void FixedUpdate(){
-        if (networkView.owner == Network.player && sp.canMove)
-        {
+        //if (networkView.owner == Network.player && sp.canMove)
+        //{
             //keyboard control
             float vertical = Input.GetAxis("Vertical") * force;
             float horizontal = Input.GetAxis("Horizontal") * force;
@@ -60,7 +60,7 @@ public class MovementScript : MonoBehaviour {
 			//wobble = curve.Evaluate (time);
 
 			transform.up = rigidbody.velocity.normalized;
-        }
+        //}
 	}
 
 	void OnGUI(){
