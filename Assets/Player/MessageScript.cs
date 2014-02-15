@@ -20,7 +20,6 @@ public class MessageScript : MonoBehaviour {
 				newShot.transform.rotation = Quaternion.LookRotation(Vector3.forward,heading);
 				newShot.rigidbody.AddForce(dir * messageForce);
 				newShot.sender = playerNumber;
-				Destroy(newShot.gameObject,5);
 			}
 		}
 	}
@@ -29,9 +28,19 @@ public class MessageScript : MonoBehaviour {
 		if(c.GetComponent<LoveShotInMotion>())
 		{
 			if (c.GetComponent<LoveShotInMotion>().sender != playerNumber) {
-				if(c.GetComponent<LoveShotInMotion>().loveFactor != 1){
-					Debug.Log("Change to hate");
+				c.GetComponent<LoveShotInMotion>().hateFactor = 1;
+				foreach(Transform t in c.transform)
+				{
+					if(t.GetComponent<LoveOrHate>().isLove)
+					{
+						t.gameObject.SetActive(false);
+					}
+					else
+					{
+						t.gameObject.SetActive(true);
+					}
 				}
+
 			}
 		}
 	}
