@@ -62,8 +62,12 @@ public class MovementScript : MonoBehaviour {
 			towardsMiddle.Normalize();
 			towardsMiddle.x = Mathf.Sign(towardsMiddle.x)*midCurve.Evaluate(towardsMiddle.x);
 			towardsMiddle.y = Mathf.Sign(towardsMiddle.y)*midCurve.Evaluate(towardsMiddle.y);
-			rigidbody.AddForce(towardsMiddle*midForce);
-			Debug.Log(towardsMiddle);
+
+			if(rigidbody.velocity.magnitude > 5){
+				towardsMiddle -= rigidbody.velocity;
+			}
+
+			rigidbody.AddForce(towardsMiddle);
 
 			//time += Time.deltaTime;
 			//wobble = curve.Evaluate (time);
