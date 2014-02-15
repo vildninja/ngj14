@@ -4,6 +4,8 @@ using System.Collections;
 public class MovementScript : MonoBehaviour {
 	public float force = 10f;
 	public float forceMultiplierForGyro = 10f;
+	public AnimationCurve midCurve;
+	public float midForce = 20f;
 	public AnimationCurve curve;
 
 	//wobble
@@ -55,6 +57,13 @@ public class MovementScript : MonoBehaviour {
 
             // Move object
             rigidbody.AddForce(dir * force * forceMultiplierForGyro);
+
+			Vector3 towardsMiddle = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2,Screen.height/2,0))- transform.position;
+			towardsMiddle.Normalize();
+			towardsMiddle.x = Mathf.Sign(towardsMiddle.x)*midCurve.Evaluate(towardsMiddle.x);
+			towardsMiddle.y = Mathf.Sign(towardsMiddle.y)*midCurve.Evaluate(towardsMiddle.y);
+			rigidbody.AddForce(towardsMiddle*midForce);
+			Debug.Log(towardsMiddle);
 
 			//time += Time.deltaTime;
 			//wobble = curve.Evaluate (time);
