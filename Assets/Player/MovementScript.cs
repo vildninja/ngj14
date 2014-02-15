@@ -15,7 +15,7 @@ public class MovementScript : MonoBehaviour {
 		//keyboard control
 		float vertical = Input.GetAxis ("Vertical") * force;
 		float horizontal = Input.GetAxis ("Horizontal") * force;
-		rigidbody.AddForce (new Vector3 (horizontal, 0, vertical));
+		rigidbody.AddForce (new Vector3 (horizontal, vertical, 0));
 
 		// we assume that device is held parallel to the ground
 		// and Home button is in the right hand
@@ -24,10 +24,10 @@ public class MovementScript : MonoBehaviour {
 		// remap device acceleration axis to game coordinates:
 		//  1) XY plane of the device is mapped onto XZ plane
 		//  2) rotated 90 degrees around Y axis
-		dir.x = -Input.acceleration.y;
-		dir.z = Input.acceleration.x;
+		dir.x = Input.acceleration.x;
+		dir.y = Input.acceleration.y;
 		
-		dir = Quaternion.Euler(0, 90, 0) * dir;
+		//dir = Quaternion.Euler(0, 90, 0) * dir;
 		
 		// clamp acceleration vector to unit sphere
 		if (dir.sqrMagnitude > 1) {
