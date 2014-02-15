@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class MovementScript : MonoBehaviour {
-	public float speed = 0.1f;
+	public float force = 10f;
 
 	// Use this for initialization
 	void Start () {
@@ -15,8 +15,16 @@ public class MovementScript : MonoBehaviour {
 		}*/
 	}
 
+	void OnGUI(){
+		GUI.Label (new Rect (10, 10, 100, 100), Input.acceleration.x.ToString ()+ "     " + Input.acceleration.y.ToString());
+	}
+
 	void Update () {
-		//only for emulating gyroscope movement on PC
+		//keyboard control
+		float vertical = Input.GetAxis ("Vertical") * force;
+		float horizontal = Input.GetAxis ("Horizontal") * force;
+		rigidbody.AddForce (new Vector3 (horizontal, 0, vertical));
+
 
 		Vector3 dir = Vector3.zero;
 		// we assume that device is held parallel to the ground
@@ -39,6 +47,6 @@ public class MovementScript : MonoBehaviour {
 		dir *= Time.deltaTime;
 		
 		// Move object
-		rigidbody.AddForce (dir * speed);
+		rigidbody.AddForce (dir * force);
 	}
 }
