@@ -9,9 +9,9 @@ public class GameServer : MonoBehaviour {
 
     public Transform startGameButtonPrefab;
 
-    public Transform[] playerPrefabs;
+    public SpacePlayer[] playerPrefabs;
 
-    public Transform player;
+    public SpacePlayer player;
 
     public Transform[] planetPrefabs;
 
@@ -95,6 +95,6 @@ public class GameServer : MonoBehaviour {
     [RPC]
     void JoinedGame(int id)
     {
-        player = Network.Instantiate(playerPrefabs[id], playerPrefabs[id].position, Quaternion.identity, 0) as Transform;
+        player = Network.Instantiate(playerPrefabs[id], playerPrefabs[id].transform.position, Quaternion.identity, 0) as SpacePlayer;
     }
 }
