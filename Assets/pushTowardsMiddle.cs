@@ -6,7 +6,7 @@ public class pushTowardsMiddle : MonoBehaviour {
 	public int direction;
 
 	void OnTriggerStay(Collider c){
-		if (c.GetComponent<Rigidbody> ()) {
+		if (c.GetComponent<MovementScript> ()) {
 			if(direction == 1){
 				c.rigidbody.AddForce (Vector3.up*pushForce);
 			}
