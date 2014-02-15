@@ -28,8 +28,6 @@ public class MessageScript : MonoBehaviour {
 									distance = Vector3.Distance (touchPos, pc.transform.position);
 							}
 					}
-
-<<<<<<< HEAD
 				LoveShotInMotion newShot = Network.Instantiate(message,transform.position,Quaternion.identity,0) as LoveShotInMotion;
 				Vector3 heading = nearest.transform.position - transform.position;
 				heading.z = 0;
@@ -37,16 +35,7 @@ public class MessageScript : MonoBehaviour {
                 newShot.SetVelocity(dir * messageForce, GetComponent<SpacePlayer>().uiColor);
 				newShot.rigidbody.AddForce(dir * messageForce);
 				newShot.senderID = gameObject.GetComponent<SpacePlayer>().id;
-=======
-					LoveShotInMotion newShot = Network.Instantiate (message, transform.position, transform.rotation, 0) as LoveShotInMotion;
-					Vector3 heading = nearest.transform.position - transform.position;
-					heading.z = 0;
-					Vector3 dir = heading / heading.magnitude;
-					newShot.transform.rotation = Quaternion.LookRotation (Vector3.forward, heading);
-					newShot.rigidbody.AddForce (dir * messageForce);
-					newShot.senderID = gameObject.GetComponent<SpacePlayer> ().id;
 				}
->>>>>>> 47921ca52e71f2c46f0b15b9422ef141c3d7d252
 			}
 		}
 	}
