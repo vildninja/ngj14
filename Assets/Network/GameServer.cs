@@ -21,6 +21,7 @@ public class GameServer : MonoBehaviour {
     public Vector2 extends;
 
     Dictionary<NetworkPlayer, int> playerIds;
+    Dictionary<int, int> score;
     List<int> ids;
 
 	// Use this for initialization
@@ -50,13 +51,8 @@ public class GameServer : MonoBehaviour {
             }
             MasterServer.UnregisterHost();
 
-            foreach (var p in planetPrefabs)
-            {
-                Network.Instantiate(p, p.transform.position, p.transform.rotation, 0);
-            }
+            SpawnPlanets();
 
-            networkView.RPC("StartTheGame", RPCMode.All);
-            StartTheGame();
         }
 
         while (!Network.isServer && !Network.isClient)
@@ -68,7 +64,84 @@ public class GameServer : MonoBehaviour {
         if (joinButtons != null)
             foreach (var t in joinButtons)
                 Destroy(t.gameObject);
+
+        // follow progress
+        while (Network.isServer)
+        {
+            score = new Dictionary<int, int>();
+            yield return new WaitForSeconds(.5f);
+            if ((playerIds.Count > 1 && FindObjectsOfType<SpacePlayer>().Length <= 1) || FindObjectsOfType<SpacePlayer>().Length == 0)
+            {
+                // game over
+
+                foreach (var p in FindObjectsOfType<PlanetController>())
+                    Network.Destroy(p.networkView.viewID);
+
+                foreach (var r in FindObjectsOfType<Rocket>())
+                    Network.Destroy(r.networkView.viewID);
+
+                var winner = FindObjectOfType<SpacePlayer>();
+                Transform victoryAnim = null;
+                if (winner)
+                {
+                    if (winner.victoryAnimation)
+                    {
+                        victoryAnim = Network.Instantiate(winner.victoryAnimation, Vector3.zero, Quaternion.identity, 0) as Transform;
+                    }
+                }
+                else
+                {
+                    // draw
+                }
+
+                yield return new WaitForSeconds(1);
+
+                Network.Destroy(winner.networkView.viewID);
+
+                ResetGame();
+                networkView.RPC("ResetGame", RPCMode.Others);
+                yield return new WaitForSeconds(1);
+
+                var startButton = Instantiate(startGameButtonPrefab);
+
+                foreach (var p in playerIds)
+                {
+                    if (p.Key != Network.player)
+                        networkView.RPC("JoinedGame", p.Key, p.Value);
+                    else
+                        JoinedGame(p.Value);
+                }
+
+                while (!startGame)
+                {
+                    yield return false;
+                }
+
+                if (victoryAnim)
+                    Network.Destroy(victoryAnim.networkView.viewID);
+
+                SpawnPlanets();
+            }
+        }
 	}
+
+    void SpawnPlanets()
+    {
+
+        foreach (var p in planetPrefabs)
+        {
+            Network.Instantiate(p, p.transform.position, p.transform.rotation, 0);
+        }
+
+        StartTheGame();
+        networkView.RPC("StartTheGame", RPCMode.All);
+    }
+
+    [RPC]
+    void ResetGame()
+    {
+        startGame = false;
+    }
 
     void OnMasterServerEvent(MasterServerEvent mse)
     {
