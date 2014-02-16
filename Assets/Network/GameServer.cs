@@ -148,6 +148,11 @@ public class GameServer : MonoBehaviour {
             Destroy(s.gameObject);
     }
 
+    void OnDisconnectedFromServer(NetworkDisconnection info)
+    {
+        Application.LoadLevel("Menu");
+    }
+
     void OnMasterServerEvent(MasterServerEvent mse)
     {
         if (mse == MasterServerEvent.HostListReceived && !Network.isServer && !Network.isClient)

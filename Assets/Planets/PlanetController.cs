@@ -24,6 +24,8 @@ public class PlanetController : MonoBehaviour {
     public float loveFalloff = 0.1f;
     public float maxLove = 1;
 
+    public float rotate = 10;
+
     public List<PlayerRelation> relations;
     public Dictionary<SpacePlayer, RelationSpiral> spirals;
 
@@ -36,6 +38,8 @@ public class PlanetController : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
+        child.parent = null;
+
         if (Network.isServer)
         {
             charge = Random.Range(-timeToShoot, 0);
@@ -55,9 +59,17 @@ public class PlanetController : MonoBehaviour {
         }
 	}
 
+    void OnDestroy()
+    {
+        if (child && child.gameObject)
+            Destroy(child.gameObject);
+    }
+
     // Update is called once per frame
     void Update()
     {
+        transform.Rotate(0, rotate * Time.deltaTime, 0);
+
         if (Network.isServer)
         {
             foreach (var relation in relations)
