@@ -29,6 +29,10 @@ public class PlanetController : MonoBehaviour {
 
     public RelationSpiral spiralPrefab;
 
+	public Material[] faces;
+
+	public Transform child;
+
 	// Use this for initialization
 	void Start ()
     {
@@ -65,6 +69,8 @@ public class PlanetController : MonoBehaviour {
 
             if (charge > timeToShoot)
             {
+
+
                 charge = 0;
                 Vector3 up = Random.insideUnitCircle.normalized;
                 var rocket = Network.Instantiate(rocketPrefab, transform.position + up, Quaternion.LookRotation(Vector3.forward, up), 0) as Rocket;
@@ -82,6 +88,20 @@ public class PlanetController : MonoBehaviour {
 
         foreach (var rel in relations)
             spirals[rel.player].value = rel.love;
+
+		foreach (var rel in relations) {
+			if(rel.player.networkView.owner == Network.player){
+				if(rel.love > 0.7){
+					child.GetComponentInChildren<MeshRenderer> ().material = faces [0];
+				}
+				else if(rel.love > 0.2){
+					child.GetComponentInChildren<MeshRenderer> ().material = faces [1];
+				}
+				else{
+					child.GetComponentInChildren<MeshRenderer> ().material = faces [2];
+				}
+			}
+		}
 	}
 
     void OnSerializeNetworkView(BitStream stream, NetworkMessageInfo info)
