@@ -84,7 +84,7 @@ public class PlanetController : MonoBehaviour {
             spirals[rel.player].value = rel.love;
 
 		foreach (var rel in relations) {
-			if(rel.player.networkView.owner == Network.player){
+			if(rel.player && rel.player.networkView.owner == Network.player){
 				if(rel.love > 0.7){
 					child.GetComponentInChildren<MeshRenderer> ().material = faces [0];
 				}

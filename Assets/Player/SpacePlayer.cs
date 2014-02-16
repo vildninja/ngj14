@@ -9,6 +9,8 @@ public class SpacePlayer : MonoBehaviour {
     public bool canMove;
     public int hp = 3;
 
+    public Transform victoryAnimation;
+
     public Transform boom;
 
     [RPC]
