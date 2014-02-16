@@ -19,6 +19,9 @@ public class SpacePlayer : MonoBehaviour {
     public void Impact()
     {
         hp--;
+		if (Network.player == networkView.owner) {
+			Camera.main.GetComponent<Shake> ().SetShake (0.2f, 0.2f);
+		}
 
         switch (hp)
         {

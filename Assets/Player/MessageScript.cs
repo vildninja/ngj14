@@ -39,7 +39,6 @@ public class MessageScript : MonoBehaviour {
                             distance = Vector3.Distance(touchPos, pc.transform.position);
                         }
                     }
-
                     LoveShotInMotion newShot = Network.Instantiate(message, transform.position, Quaternion.identity, 0) as LoveShotInMotion;
                     Vector3 heading = nearest.transform.position - transform.position;
                     heading.z = 0;

@@ -20,6 +20,8 @@ public class GameServer : MonoBehaviour {
     public int planetCounts = 5;
     public Vector2 extends;
 
+	public AudioClip[] music;
+
     Dictionary<NetworkPlayer, int> playerIds;
     Dictionary<int, int> score;
     List<int> ids;
@@ -74,6 +76,8 @@ public class GameServer : MonoBehaviour {
             if ((playerIds.Count > 1 && FindObjectsOfType<SpacePlayer>().Length <= 1) || FindObjectsOfType<SpacePlayer>().Length == 0)
             {
                 // game over
+				Camera.main.audio.clip = music[0];
+				Camera.main.audio.Play();
 
                 foreach (var p in FindObjectsOfType<PlanetController>())
                     Network.Destroy(p.networkView.viewID);
@@ -121,6 +125,9 @@ public class GameServer : MonoBehaviour {
 
                 if (victoryAnim)
                     Network.Destroy(victoryAnim.networkView.viewID);
+
+				Camera.main.audio.clip = music[1];
+				Camera.main.audio.Play();
 
                 SpawnPlanets();
             }
