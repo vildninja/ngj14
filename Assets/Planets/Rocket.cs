@@ -13,6 +13,8 @@ public class Rocket : MonoBehaviour {
 
     public Texture2D[] textures;
 
+	public float speedFactor;
+
 	// Use this for initialization
 	IEnumerator Start () {
 
@@ -74,7 +76,7 @@ public class Rocket : MonoBehaviour {
 
         if (rigidbody.velocity.magnitude > 3)
         {
-            direction -= rigidbody.velocity;
+            direction -= rigidbody.velocity*2;
         }
 
         rigidbody.AddForce(direction);

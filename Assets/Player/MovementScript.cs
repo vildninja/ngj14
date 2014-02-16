@@ -4,8 +4,6 @@ using System.Collections;
 public class MovementScript : MonoBehaviour {
 	public float force = 10f;
 	public float forceMultiplierForGyro = 10f;
-	public AnimationCurve midCurve;
-	public float midForce = 20f;
 	public AnimationCurve curve;
 
 	//wobble
@@ -42,6 +40,10 @@ public class MovementScript : MonoBehaviour {
 
             //dir = Quaternion.Euler(0, 90, 0) * dir;
 
+			if(rigidbody.velocity.magnitude > 6){
+				dir -= rigidbody.velocity;
+			}
+
             // clamp acceleration vector to unit sphere
             if (dir.sqrMagnitude > 1)
             {
@@ -52,13 +54,12 @@ public class MovementScript : MonoBehaviour {
             dir.y = Mathf.Sign(dir.y) * curve.Evaluate(dir.y);
 
             // Make it move 10 meters per second instead of 10 meters per frame...
-            dir *= Time.deltaTime;
-
+			dir *= Time.deltaTime;
 
             // Move object
             rigidbody.AddForce(dir * force * forceMultiplierForGyro);
 
-			Vector3 towardsMiddle = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2,Screen.height/2,0))- transform.position;
+			/*Vector3 towardsMiddle = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width/2,Screen.height/2,0))- transform.position;
 			towardsMiddle.Normalize();
 			towardsMiddle.x = Mathf.Sign(towardsMiddle.x)*midCurve.Evaluate(towardsMiddle.x);
 			towardsMiddle.y = Mathf.Sign(towardsMiddle.y)*midCurve.Evaluate(towardsMiddle.y);
@@ -67,7 +68,7 @@ public class MovementScript : MonoBehaviour {
 				towardsMiddle -= rigidbody.velocity;
 			}
 
-			rigidbody.AddForce(towardsMiddle);
+			rigidbody.AddForce(towardsMiddle);*/
 
 			//time += Time.deltaTime;
 			//wobble = curve.Evaluate (time);
