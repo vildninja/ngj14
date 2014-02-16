@@ -9,6 +9,8 @@ public class SpacePlayer : MonoBehaviour {
     public bool canMove;
     public int hp = 3;
 
+    public Texture2D[] damage;
+
     public Transform victoryAnimation;
 
     public Transform boom;
@@ -17,6 +19,17 @@ public class SpacePlayer : MonoBehaviour {
     public void Impact()
     {
         hp--;
+
+        switch (hp)
+        {
+            case 2:
+                GetComponentInChildren<Renderer>().material.mainTexture = damage[0];
+                break;
+            case 1:
+                GetComponentInChildren<Renderer>().material.mainTexture = damage[1];
+                break;
+        }
+
         if (hp <= 0 && gameObject)
         {
             foreach (var p in FindObjectsOfType<PlanetController>())

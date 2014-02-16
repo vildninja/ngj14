@@ -99,7 +99,8 @@ public class GameServer : MonoBehaviour {
                 networkView.RPC("ResetGame", RPCMode.Others);
                 yield return new WaitForSeconds(1);
 
-                Network.Destroy(winner.networkView.viewID);
+                if (winner)
+                    Network.Destroy(winner.networkView.viewID);
 
                 yield return new WaitForSeconds(1);
 
