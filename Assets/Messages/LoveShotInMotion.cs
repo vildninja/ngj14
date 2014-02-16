@@ -8,8 +8,13 @@ public class LoveShotInMotion : MonoBehaviour {
     public SpacePlayer player;
 	public float loveFactor;
 	public float selfDestructTimer = 20;
+	public AudioClip[] sounds;
 
 	IEnumerator Start(){
+		if (Network.player == networkView.owner) {
+			audio.clip = sounds[0];
+			audio.Play();
+		}
 		yield return new WaitForSeconds (selfDestructTimer);
 		Network.Destroy (gameObject);
 	}
@@ -39,6 +44,10 @@ public class LoveShotInMotion : MonoBehaviour {
                 }
                 else
                 {
+					if (Network.player == networkView.owner) {
+						audio.clip = sounds[1];
+						audio.Play();
+					}
                     t.gameObject.SetActive(true);
                 }
             }
