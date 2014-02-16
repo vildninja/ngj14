@@ -61,28 +61,22 @@ public class PlanetController : MonoBehaviour {
         if (Network.isServer)
         {
             foreach (var relation in relations)
-                if (relation.love > 0)
-                    relation.love -= loveFalloff * Time.deltaTime;
-
-            // the fewer who loves it the faster it will shoot;
-            charge += (relations.Count(r => r.love < maxLove / 2) + relations.Count(r => r.love < maxLove / 4) * 2) * Time.deltaTime;
-
-            if (charge > timeToShoot)
             {
+                if (relation.love > 0)
+                {
+                    relation.love -= loveFalloff * Time.deltaTime;
+                }
+
+                if (relation.love <= 0)
+                {
+                    Vector3 up = Random.insideUnitCircle.normalized;
+                    var rocket = Network.Instantiate(rocketPrefab, transform.position + up, Quaternion.LookRotation(Vector3.forward, up), 0) as Rocket;
 
 
-                charge = 0;
-                Vector3 up = Random.insideUnitCircle.normalized;
-                var rocket = Network.Instantiate(rocketPrefab, transform.position + up, Quaternion.LookRotation(Vector3.forward, up), 0) as Rocket;
+                    relation.love += 0.4f;
 
-                PlayerRelation minLove = null;
-                foreach (var rel in relations)
-                    if (minLove == null || rel.love < minLove.love)
-                        minLove = rel;
-
-                minLove.love += 0.2f;
-
-                StartCoroutine(SetRocketTarget(rocket, minLove.player));
+                    StartCoroutine(SetRocketTarget(rocket, relation.player));
+                }
             }
         }
 
