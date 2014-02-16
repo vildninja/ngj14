@@ -74,6 +74,7 @@ public class MovementScript : MonoBehaviour {
 			//wobble = curve.Evaluate (time);
 
 			transform.up = rigidbody.velocity.normalized;
+
         }
 	}
 
