@@ -63,7 +63,8 @@ public class GameServer : MonoBehaviour {
 
         if (joinButtons != null)
             foreach (var t in joinButtons)
-                Destroy(t.gameObject);
+                if (t && t.gameObject)
+                    Destroy(t.gameObject);
 
         // follow progress
         while (Network.isServer)
@@ -94,12 +95,12 @@ public class GameServer : MonoBehaviour {
                     // draw
                 }
 
+                ResetGame();
+                networkView.RPC("ResetGame", RPCMode.Others);
                 yield return new WaitForSeconds(1);
 
                 Network.Destroy(winner.networkView.viewID);
 
-                ResetGame();
-                networkView.RPC("ResetGame", RPCMode.Others);
                 yield return new WaitForSeconds(1);
 
                 var startButton = Instantiate(startGameButtonPrefab);
@@ -141,6 +142,9 @@ public class GameServer : MonoBehaviour {
     void ResetGame()
     {
         startGame = false;
+
+        foreach (var s in FindObjectsOfType<RelationSpiral>())
+            Destroy(s.gameObject);
     }
 
     void OnMasterServerEvent(MasterServerEvent mse)
@@ -191,7 +195,8 @@ public class GameServer : MonoBehaviour {
     {
         if (joinButtons != null)
             foreach (var t in joinButtons)
-                Destroy(t.gameObject);
+                if (t && t.gameObject)
+                    Destroy(t.gameObject);
         player = Network.Instantiate(playerPrefabs[id], playerPrefabs[id].transform.position, Quaternion.identity, 0) as SpacePlayer;
     }
 }
