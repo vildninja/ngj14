@@ -99,7 +99,8 @@ public class GameServer : MonoBehaviour {
                 networkView.RPC("ResetGame", RPCMode.Others);
                 yield return new WaitForSeconds(1);
 
-                Network.Destroy(winner.networkView.viewID);
+                if (winner)
+                    Network.Destroy(winner.networkView.viewID);
 
                 yield return new WaitForSeconds(1);
 
@@ -147,6 +148,11 @@ public class GameServer : MonoBehaviour {
             Destroy(s.gameObject);
     }
 
+    void OnDisconnectedFromServer(NetworkDisconnection info)
+    {
+        Application.LoadLevel("Menu");
+    }
+
     void OnMasterServerEvent(MasterServerEvent mse)
     {
         if (mse == MasterServerEvent.HostListReceived && !Network.isServer && !Network.isClient)
@@ -180,6 +186,9 @@ public class GameServer : MonoBehaviour {
     {
         ids.Add(playerIds[pid]);
         playerIds.Remove(pid);
+        foreach (var sp in FindObjectsOfType<SpacePlayer>())
+            if (sp.networkView.owner == pid)
+                Network.Destroy(sp.networkView.viewID);
     }
 
     [RPC]

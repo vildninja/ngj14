@@ -10,8 +10,11 @@ public class VictoryAnimation : MonoBehaviour {
 	void Awake ()
     {
         model = transform.Find("Model");
-        var tex = FindObjectOfType<SpacePlayer>().renderer.material.mainTexture;
-        model.GetComponentInChildren<Renderer>().material.mainTexture = tex;
+        if (FindObjectOfType<SpacePlayer>())
+        {
+            var tex = FindObjectOfType<SpacePlayer>().GetComponentInChildren<Renderer>().material.mainTexture;
+            model.GetComponentInChildren<Renderer>().material.mainTexture = tex;
+        }
 	}
 	
 	// Update is called once per frame
