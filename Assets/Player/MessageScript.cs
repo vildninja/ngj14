@@ -4,7 +4,9 @@ using System.Collections;
 public class MessageScript : MonoBehaviour {
 
 	public LoveShotInMotion message;
-	public float messageForce = 100f;
+	public float messageForce = 4;
+    float coolDown = 1;
+    float charge = 1;
 
 	private SpacePlayer sp;
 
@@ -13,11 +15,17 @@ public class MessageScript : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
-		if (sp.canMove && networkView.owner == Network.player) {
-			foreach (Touch t in Input.touches) {
-                if (t.phase == TouchPhase.Began)
+    void Update()
+    {
+
+        if (sp.canMove && networkView.owner == Network.player)
+        {
+            charge += Time.deltaTime;
+            foreach (Touch t in Input.touches)
+            {
+                if (t.phase == TouchPhase.Began && charge > coolDown)
                 {
+                    charge = 0;
                     Vector3 touchPos = Camera.main.ScreenToWorldPoint(t.position);
 
                     //Find nearest Planet
@@ -39,9 +47,9 @@ public class MessageScript : MonoBehaviour {
                     newShot.SetVelocity(dir * messageForce, sp.id);
                     newShot.networkView.RPC("SetVelocity", RPCMode.Others, dir * messageForce, sp.id);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
     void OnTriggerEnter(Collider c)
     {

@@ -52,7 +52,7 @@ public class GameServer : MonoBehaviour {
 
             foreach (var p in planetPrefabs)
             {
-                Network.Instantiate(p, p.transform.position, Quaternion.identity, 0);
+                Network.Instantiate(p, p.transform.position, p.transform.rotation, 0);
             }
 
             networkView.RPC("StartTheGame", RPCMode.All);
