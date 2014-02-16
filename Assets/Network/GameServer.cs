@@ -186,6 +186,9 @@ public class GameServer : MonoBehaviour {
     {
         ids.Add(playerIds[pid]);
         playerIds.Remove(pid);
+        foreach (var sp in FindObjectsOfType<SpacePlayer>())
+            if (sp.networkView.owner == pid)
+                Network.Destroy(sp.networkView.viewID);
     }
 
     [RPC]
