@@ -11,6 +11,8 @@ public class Rocket : MonoBehaviour {
     public List<Transform> avoid;
     Vector3 direction = Vector3.zero;
 
+    public Texture2D[] textures;
+
 	// Use this for initialization
 	IEnumerator Start () {
 
@@ -30,6 +32,7 @@ public class Rocket : MonoBehaviour {
         if (FindObjectsOfType<SpacePlayer>().Any(sp => sp.networkView.owner == np))
         {
             target = FindObjectsOfType<SpacePlayer>().First(sp => sp.networkView.owner == np);
+            GetComponentInChildren<Renderer>().material.mainTexture = textures[target.id - 1];
 
             avoid = new List<Transform>();
             foreach (var sp in FindObjectsOfType<SpacePlayer>())

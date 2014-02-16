@@ -16,6 +16,7 @@ public class GameController {
 
 
     public bool isServer;
+    public string name;
 
     private GameController()
     {
